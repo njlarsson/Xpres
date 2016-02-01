@@ -4,6 +4,10 @@ grammar Xpres;
 package xpres2.grammar;
 }
 
+file
+: code
+;
+
 code
 : statement ';' code
 | EOF                           // implicitly defined terminal

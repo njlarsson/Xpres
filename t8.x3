@@ -1,0 +1,11 @@
+var a;
+var b;
+var c;
+var d;
+var e;
+b = 6;
+a = b+4;
+c = a+b+100;
+d = (a+b)+100;
+e = 1+(2+a+(4+b+c)+7+d)+1000;
+print e;
