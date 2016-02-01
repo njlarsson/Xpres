@@ -1,0 +1,17 @@
+# Emacs backups
+*~
+
+# LaTeX outputs
+*.aux
+*.log
+*.dvi
+
+# Object code
+*.class
+
+# Don't version-control javadoc for now
+api
+
+# Antlr outputs
+*/grammar/*.java
+*.tokens
