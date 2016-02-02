@@ -1,5 +1,6 @@
 grammar Xpres;
 
+// Remove this header if using the default IntelliJ project layout
 @header {
 package xpres2.grammar;
 }
