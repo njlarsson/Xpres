@@ -1,5 +1,5 @@
 var a;
 var b;
 b = 666;
-a = b+42;
+a = b+42*6;
 print a;

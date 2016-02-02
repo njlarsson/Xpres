@@ -1,6 +1,6 @@
 var a;
 var b;
-var c
+var c;
 b = 6;
 a = b+4;
 c = a+b*100;
