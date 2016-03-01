@@ -58,19 +58,30 @@ public class Compiler extends XpresBaseListener {
     private final String infnam;
     private final HashMap<String, Integer> varAddr = new HashMap<String, Integer>();
     private final Writer out;
+    private final boolean traceOn;
 
     private int curVarAddr = varBase;
+    private int emittedOps = 0;
     
-    Compiler(String infnam, String outfnam) throws IOException {
+    Compiler(String infnam, String outfnam, boolean traceOn) throws IOException {
         this.infnam = infnam;
         out = new OutputStreamWriter(new FileOutputStream(outfnam), "US-ASCII");
+        this.traceOn = traceOn;
     }
 
     private void write(String s) {
+        // Count newlines to keep track of how many lines (operations) are output.
+        for (int i = 0; (i = s.indexOf('\n', i)) >= 0; i++) { emittedOps++; }
         try {
             out.write(s);
         } catch (IOException iox) {
             throw new IORuntimeException(iox);
+        }
+    }
+
+    private void tracePrint(String message) {
+        if (traceOn) {
+            System.out.println("At operation "+emittedOps+": "+message);
         }
     }
 
@@ -105,6 +116,7 @@ public class Compiler extends XpresBaseListener {
     }
 
     private void emitPushD() {
+        tracePrint("(push D)");
         emitAInstr(SPAddr);                     // @SP
         emitCInstr(DestA, CompM, 0);            // A=SP
         emitCInstr(DestM, CompD, 0);            // [SP]=D
@@ -114,6 +126,7 @@ public class Compiler extends XpresBaseListener {
     }
     
     private void emitPopD() {
+        tracePrint("(pop D)");
         emitAInstr(SPAddr);                     // @SP
         emitCInstr(DestD, MMinus1, 0);          // D=SP-1
         emitCInstr(DestM | DestA, CompD, 0);    // SP=SP-1; A=SP
@@ -122,6 +135,7 @@ public class Compiler extends XpresBaseListener {
     
     @Override
     public void enterFile(XpresParser.FileContext ctx) {
+        tracePrint("Initialize SP ("+SPAddr+") to "+stackBase);
         emitAInstr(stackBase);
         emitCInstr(DestD, CompA, 0);
         emitAInstr(SPAddr);
@@ -149,6 +163,7 @@ public class Compiler extends XpresBaseListener {
     @Override
     public void exitAssign(XpresParser.AssignContext ctx) {
         int a = getVarAddr(ctx.ID().getSymbol());
+        tracePrint("Pop from stack and put in "+a);
         emitPopD();
         emitAInstr(a);
         emitCInstr(DestM, CompD, 0);
@@ -161,8 +176,10 @@ public class Compiler extends XpresBaseListener {
     
     @Override
     public void exitExpr(XpresParser.ExprContext ctx) {
-        if (ctx.expr() != null) {
+        ParseTree operator = ctx.getChild(1); // the second token, if it's there, is the operator
+        if (operator != null && "+".equals(operator.getText())) { // if it's plus, this is an addition
             // Add the top two numbers on the stack, leaving only the sum.
+            tracePrint("Add top two numbers on the stack, leaving the sum");
             emitAInstr(SPAddr);                 // @SP
             emitCInstr(DestA, MMinus1, 0);      // A=SP-1
             emitCInstr(DestD, CompM, 0);        // D=[SP-1]
@@ -171,6 +188,8 @@ public class Compiler extends XpresBaseListener {
             emitCInstr(DestD, APlus1, 0);       // D=SP-1
             emitAInstr(SPAddr);                 // @SP
             emitCInstr(DestM, CompD, 0);        // SP=SP-1
+        } else {
+            // No operator we know, so it must be a lone term. Just leave it on the stack.
         }
     }
     
@@ -185,11 +204,13 @@ public class Compiler extends XpresBaseListener {
     public void enterAtomExpr(XpresParser.AtomExprContext ctx) {
         if (ctx.ID() != null) {
             int a = getVarAddr(ctx.ID().getSymbol());
+            tracePrint("Push contents of "+a+" on stack");
             emitAInstr(a);
             emitCInstr(DestD, CompM, 0);
             emitPushD();
         } else if (ctx.INT() != null) {
             int i = Integer.parseInt(ctx.INT().getText());
+            tracePrint("Push "+i+" on stack");
             emitAInstr(i);
             emitCInstr(DestD, CompA, 0);
             emitPushD();

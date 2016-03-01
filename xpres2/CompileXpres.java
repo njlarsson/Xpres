@@ -9,12 +9,13 @@ public class CompileXpres {
     public static void main(String[] args) throws IOException {
         String infnam = args[0];
         String outfnam = args[1];
+        boolean traceOn = args.length < 3 || "traceOn".equalsIgnoreCase(args[2]);
         ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(infnam));
         XpresLexer lexer = new XpresLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         XpresParser parser = new XpresParser(tokens);
         ParseTree tree = parser.file();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new Compiler(infnam, outfnam), tree);
+        walker.walk(new Compiler(infnam, outfnam, traceOn), tree);
     }
 }
