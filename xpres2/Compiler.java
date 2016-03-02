@@ -71,7 +71,9 @@ public class Compiler extends XpresBaseListener {
 
     private void write(String s) {
         // Count newlines to keep track of how many lines (operations) are output.
-        for (int i = 0; (i = s.indexOf('\n', i)) >= 0; i++) { emittedOps++; }
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '\n') { emittedOps++; }
+        }
         try {
             out.write(s);
         } catch (IOException iox) {
