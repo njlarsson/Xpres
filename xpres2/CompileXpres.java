@@ -7,9 +7,18 @@ import xpres2.grammar.*;
 
 public class CompileXpres {
     public static void main(String[] args) throws IOException {
-        String infnam = args[0];
+        String infnam;
         String outfnam = args[1];
         boolean traceOn = args.length < 3 || "traceOn".equalsIgnoreCase(args[2]);
+
+        if (args.length > 0) {
+            infnam = args[0];
+        } else {
+            System.out.println("Vilken fil vill du köra?");
+            Scanner scanner = new Scanner(System.in);
+            infnam = scanner.nextLine();
+        }
+
         ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(infnam));
         XpresLexer lexer = new XpresLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
