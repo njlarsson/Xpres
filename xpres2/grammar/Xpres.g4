@@ -11,7 +11,7 @@ file
 
 code
 : statement ';' code
-| EOF                           // implicitly defined terminal
+|
 ;
 
 statement
@@ -33,8 +33,12 @@ print
 ;
 
 expr
+: addExpr
+;
+
+addExpr
 : mulExpr
-| expr '+' mulExpr
+| addExpr '+' mulExpr
 ;
 
 mulExpr

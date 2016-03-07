@@ -49,8 +49,8 @@ public class Interpreter extends XpresBaseListener {
     }
     
     @Override
-    public void exitExpr(XpresParser.ExprContext ctx) {
-        if (ctx.expr() != null) {
+    public void exitAddExpr(XpresParser.AddExprContext ctx) {
+        if (ctx.addExpr() != null) {
             exprVal.push(exprVal.pop() + exprVal.pop());
         }
     }

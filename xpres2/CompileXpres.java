@@ -16,6 +16,10 @@ public class CompileXpres {
         XpresParser parser = new XpresParser(tokens);
         ParseTree tree = parser.file();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new Compiler(infnam, outfnam, traceOn), tree);
+        HackGen out = new HackGen(1024, 2048, 1025);
+        walker.walk(new Compiler(infnam, out, traceOn), tree);
+        Writer w = new OutputStreamWriter(new FileOutputStream(outfnam), "US-ASCII");
+        out.outputCode(w);
+        w.close();
     }
 }
