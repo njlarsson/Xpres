@@ -11,7 +11,6 @@ public class Compiler extends XpresBaseListener {
     
     private final HackGen out;
     private final HashMap<String, Integer> varAddr = new HashMap<String, Integer>();
-    private final Stack<Integer> addrStack = new Stack<Integer>();
     
     Compiler(String infnam, HackGen out, boolean traceOn) {
         this.infnam = infnam;
