@@ -165,6 +165,15 @@ public class HackGen {
         emitCInstr(DestM, CompD, 0);   // [SP-1]=D
     }
 
+    /** Emits a sequence of instructions to check if D was negative. If it was, a nonzero value is
+     *  left in D; otherwize zero is left in D. (More specifically, the nonzero value left is D was
+     *  negative is the sign bit only.) */
+    public void emitTestNegative() {
+        emitAInstr(0b111111111111111);               // inverted mask for sign bit
+        emitCInstr(HackGen.DestA, HackGen.NotA, 0);  // corrected mask
+        emitCInstr(HackGen.DestD, HackGen.DAndA, 0); // D=D&mask = nonzero iff negative
+    }
+    
     /** Outputs the contents of the code buffer as binary-number strings (i.e.,
       * the .hack file format). */
     public void outputCode(Writer w) throws IOException {
