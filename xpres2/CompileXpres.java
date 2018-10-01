@@ -1,6 +1,7 @@
 package xpres2;
 
 import java.io.*;
+import java.util.Scanner;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import xpres2.grammar.*;
