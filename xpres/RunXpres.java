@@ -1,3 +1,5 @@
+package xpres;
+
 import java.io.*;
 import java.util.Scanner;
 import org.antlr.v4.runtime.*;
@@ -14,7 +16,7 @@ public class RunXpres {
             Scanner scanner = new Scanner(System.in);
             infnam = scanner.nextLine();
         }
-        ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(infnam));
+        CharStream input = CharStreams.fromFileName(infnam);
         XpresLexer lexer = new XpresLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         XpresParser parser = new XpresParser(tokens);

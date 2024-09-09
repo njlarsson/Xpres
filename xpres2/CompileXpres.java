@@ -20,7 +20,7 @@ public class CompileXpres {
             infnam = scanner.nextLine();
         }
 
-        ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(infnam));
+        CharStream input = CharStreams.fromFileName(infnam);
         XpresLexer lexer = new XpresLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         XpresParser parser = new XpresParser(tokens);
